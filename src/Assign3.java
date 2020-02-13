@@ -22,6 +22,10 @@ public class Assign3 {
 		}
 	}
 
+	/**
+	 * give user prompt (current dir) and wait for their next input
+	 * @return the line of user input
+	 */
 	public static String getNextLine() {
 		System.out.print("[" + System.getProperty("user.dir") + "]: ");
 		return input.nextLine();
@@ -44,6 +48,7 @@ public class Assign3 {
 		handleCommands(commands, params);
 	}
 
+	
 	private static void handleCommands(ArrayList<String> cmds, ArrayList<String[]> params) {
 		for (int i = 0; i < cmds.size(); i++) {
 			System.out.println("Executing command: " + cmds.get(i));
@@ -52,7 +57,13 @@ public class Assign3 {
 		}
 	}
 
-	public static String[] splitCommand(String command) {
+	/**
+	 * splits a command into an array of words
+	 * also handles quotation marks
+	 * @param command the line to be split
+	 * @return an array of the words in the command, strings within quotes are one index of the array
+	 */
+	private static String[] splitCommand(String command) {
 		java.util.ArrayList<String> matchList = new java.util.ArrayList<>();
 		Pattern regex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
 		Matcher regexMatcher = regex.matcher(command);
