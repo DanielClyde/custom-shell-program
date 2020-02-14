@@ -3,9 +3,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CustomShell {
-    private HashMap<String, ICommandRunner> commandMap = new HashMap<>();
+    private HashMap<String, BuiltInCommand> commandMap = new HashMap<>();
     private Scanner input = new Scanner(System.in);
     private ArrayList<String> history = new ArrayList<>();
+    private String ptime = "the ptime";
+
     public CustomShell() {
         this.initializeCommandMap();
     }
@@ -19,12 +21,12 @@ public class CustomShell {
     }
 
     private void initializeCommandMap() {
-        this.commandMap.put("ptime", (cmd, params) -> printList(params));//do something);
-        this.commandMap.put("history", ((cmd, params) -> printList(params)));
-        this.commandMap.put("list", ((cmd, params) -> printList(params)));
-        this.commandMap.put("cd", ((cmd, params) -> printList(params)));
-        this.commandMap.put("mdir", ((cmd, params) -> printList(params)));
-        this.commandMap.put("rdir", ((cmd, params) -> printList(params)));
+        this.commandMap.put("ptime", new PTimeCommand());
+        this.commandMap.put("history", new HistoryCommand());
+        this.commandMap.put("list", new HistoryCommand());
+        this.commandMap.put("cd", new HistoryCommand());
+        this.commandMap.put("mdir", new HistoryCommand());
+        this.commandMap.put("rdir", new HistoryCommand());
     }
 
     /**
@@ -60,8 +62,18 @@ public class CustomShell {
         for (int i = 0; i < cmds.size(); i++) {
             if (this.commandMap.containsKey(cmds.get(i))) {
                 System.out.println("running " + cmds.get(i));
-                this.commandMap.get(cmds.get(i)).runCommand(cmds.get(i), params.get(i));
+                this.runBuiltInCmd(cmds.get(i), params.get(i));
             }
+        }
+    }
+
+    private void runBuiltInCmd(String cmd, String[] params) {
+        if (cmd.equals("history")) {
+            this.commandMap.get(cmd).run(this.history.toArray(new String[0]));
+        } else if (cmd.equals("ptime")) {
+            this.commandMap.get(cmd).run(new String[]{this.ptime,});
+        } else {
+            this.commandMap.get(cmd).run(params);
         }
     }
 
