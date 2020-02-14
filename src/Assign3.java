@@ -1,8 +1,5 @@
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,13 +10,24 @@ import java.util.regex.Pattern;
 
 public class Assign3 {
 	final static String[] builtInCommands = {"ptime", "history", "list", "cd", "mdir", "rdir"};
+	static HashMap<String, ICommandRunner> commandMap = new HashMap<>();
 	static Scanner input = new Scanner(System.in);
 	public static void main(String[] args) {
+		initializeCommandMap();
 		String cmd = "";
 		while(!cmd.equals("exit")) {
 			cmd = getNextLine();
 			handleLine(cmd);
 		}
+	}
+
+	public static void initializeCommandMap() {
+		commandMap.put("ptime", (cmd, params) -> //do something);
+		commandMap.put("history", HistoryRunner);
+		commandMap.put("list", ListRunner);
+		commandMap.put("cd", CDRunner);
+		commandMap.put("mdir", MDirRunner);
+		commandMap.put("rdir", RDirRunner);
 	}
 
 	/**
@@ -48,7 +56,7 @@ public class Assign3 {
 		handleCommands(commands, params);
 	}
 
-	
+
 	private static void handleCommands(ArrayList<String> cmds, ArrayList<String[]> params) {
 		for (int i = 0; i < cmds.size(); i++) {
 			System.out.println("Executing command: " + cmds.get(i));
