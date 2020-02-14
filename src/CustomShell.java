@@ -63,6 +63,12 @@ public class CustomShell {
             if (this.commandMap.containsKey(cmds.get(i))) {
                 System.out.println("running " + cmds.get(i));
                 this.runBuiltInCmd(cmds.get(i), params.get(i));
+            } else if (cmds.get(i).startsWith("^")) {
+                int index = Integer.parseInt(cmds.get(i).substring(1));
+                String newCmd = this.history.get(index);
+                this.handleLine(newCmd);
+            } else {
+                System.out.println(cmds.get(i) + " is not a valid command");
             }
         }
     }
