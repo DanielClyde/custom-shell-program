@@ -1,16 +1,22 @@
+import java.io.File;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * This class accepts lines of input and attempts to run built-in or external commands from it.
+ * @author Danny Clyde
+ */
 public class CustomShell {
     private HashMap<String, BuiltInCommand> commandMap = new HashMap<>();
     private Scanner input = new Scanner(System.in);
     private ArrayList<String> history = new ArrayList<>();
-    private String ptime = "the ptime";
+    private long time = 0;
 
     public CustomShell() {
         this.initializeCommandMap();
     }
+
     public void run()  {
         String cmd = "";
         while(!cmd.equals("exit")) {
@@ -54,11 +60,59 @@ public class CustomShell {
         } else {
             params.add(Arrays.copyOfRange(splitCmds, 1, splitCmds.length));
         }
-        handleCommands(commands, params);
+        this.handleBuiltInCommands(commands, params);
+        this.handleExternalCommands(splitCmds);
+    }
+
+    private void handleExternalCommands(String[] cmd) {
+        int index = Arrays.binarySearch(cmd, "|");
+        if (index >= 0) {
+            this.handleExternalPipeCommands(
+                Arrays.copyOfRange(cmd, 0, index),
+                Arrays.copyOfRange(cmd, index + 1, cmd.length));
+        } else {
+            ProcessBuilder pb = new ProcessBuilder(cmd);
+            pb.directory(new File(System.getProperty("user.dir")));
+            pb.redirectInput(ProcessBuilder.Redirect.INHERIT);
+            pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+            try {
+                long start = System.currentTimeMillis();
+                Process p = pb.start();
+                p.waitFor();
+                long end = System.currentTimeMillis();
+                this.time += (end - start);
+            } catch (Exception e) {
+                System.out.println("unknown command found!");
+            }
+        }
+    }
+
+    private void handleExternalPipeCommands(String[] cmd1, String[] cmd2) {
+        ProcessBuilder pb1 = new ProcessBuilder(cmd1);
+        ProcessBuilder pb2 = new ProcessBuilder(cmd2);
+        pb1.redirectInput(ProcessBuilder.Redirect.INHERIT);
+        pb2.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+        try {
+            Process p1 = pb1.start();
+            Process p2 = pb2.start();
+            java.io.InputStream in = p1.getInputStream();
+            java.io.OutputStream out = p2.getOutputStream();
+
+            int c;
+            while ((c = in.read()) != -1) {
+                out.write(c);
+            }
+            out.flush();
+            out.close();
+            p1.waitFor();
+            p2.waitFor();
+        } catch (Exception ex) {
+            System.out.println("unknown command found!");
+        }
     }
 
 
-    private void handleCommands(ArrayList<String> cmds, ArrayList<String[]> params) {
+    private void handleBuiltInCommands(ArrayList<String> cmds, ArrayList<String[]> params) {
         for (int i = 0; i < cmds.size(); i++) {
             if (this.commandMap.containsKey(cmds.get(i))) {
                 System.out.println("running " + cmds.get(i));
@@ -67,8 +121,6 @@ public class CustomShell {
                 int index = Integer.parseInt(cmds.get(i).substring(1));
                 String newCmd = this.history.get(index);
                 this.handleLine(newCmd);
-            } else {
-                System.out.println(cmds.get(i) + " is not a valid command");
             }
         }
     }
@@ -77,7 +129,7 @@ public class CustomShell {
         if (cmd.equals("history")) {
             this.commandMap.get(cmd).run(this.history.toArray(new String[0]));
         } else if (cmd.equals("ptime")) {
-            this.commandMap.get(cmd).run(new String[]{this.ptime,});
+            this.commandMap.get(cmd).run(new String[]{String.valueOf(this.time),});
         } else {
             this.commandMap.get(cmd).run(params);
         }
