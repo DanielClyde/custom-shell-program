@@ -29,7 +29,7 @@ public class CustomShell {
     private void initializeCommandMap() {
         this.commandMap.put("ptime", new PTimeCommand());
         this.commandMap.put("history", new HistoryCommand());
-        this.commandMap.put("list", new HistoryCommand());
+        this.commandMap.put("list", new ListCommand());
         this.commandMap.put("cd", new HistoryCommand());
         this.commandMap.put("mdir", new HistoryCommand());
         this.commandMap.put("rdir", new HistoryCommand());
