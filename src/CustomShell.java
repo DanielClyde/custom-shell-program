@@ -30,9 +30,9 @@ public class CustomShell {
         this.commandMap.put("ptime", new PTimeCommand());
         this.commandMap.put("history", new HistoryCommand());
         this.commandMap.put("list", new ListCommand());
-        this.commandMap.put("cd", new HistoryCommand());
-        this.commandMap.put("mdir", new HistoryCommand());
-        this.commandMap.put("rdir", new HistoryCommand());
+        this.commandMap.put("cd", new CDCommand());
+        this.commandMap.put("mdir", new MDirCommand());
+        this.commandMap.put("rdir", new RDirCommand());
     }
 
     /**
@@ -81,9 +81,7 @@ public class CustomShell {
                 p.waitFor();
                 long end = System.currentTimeMillis();
                 this.time += (end - start);
-            } catch (Exception e) {
-                System.out.println("unknown command found!");
-            }
+            } catch (Exception e) { }
         }
     }
 
@@ -106,16 +104,13 @@ public class CustomShell {
             out.close();
             p1.waitFor();
             p2.waitFor();
-        } catch (Exception ex) {
-            System.out.println("unknown command found!");
-        }
+        } catch (Exception ex) { }
     }
 
 
     private void handleBuiltInCommands(ArrayList<String> cmds, ArrayList<String[]> params) {
         for (int i = 0; i < cmds.size(); i++) {
             if (this.commandMap.containsKey(cmds.get(i))) {
-                System.out.println("running " + cmds.get(i));
                 this.runBuiltInCmd(cmds.get(i), params.get(i));
             } else if (cmds.get(i).startsWith("^")) {
                 int index = Integer.parseInt(cmds.get(i).substring(1));
