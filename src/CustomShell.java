@@ -2,6 +2,7 @@ import java.io.File;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.lang.*;
 
 /**
  * This class accepts lines of input and attempts to run built-in or external commands from it.
@@ -91,6 +92,7 @@ public class CustomShell {
         ProcessBuilder pb1 = new ProcessBuilder(cmd1);
         ProcessBuilder pb2 = new ProcessBuilder(cmd2);
         pb1.redirectInput(ProcessBuilder.Redirect.INHERIT);
+//        pb1.redirectOutput(ProcessBuilder.Redirect.PIPE);
         pb2.redirectOutput(ProcessBuilder.Redirect.INHERIT);
         try {
             Process p1 = pb1.start();
