@@ -66,7 +66,7 @@ public class CustomShell {
 
     private void handleExternalCommands(String[] cmd) {
         int index = Arrays.binarySearch(cmd, "|");
-        if (index >= 0) {
+        if (index > -1) {
             this.handleExternalPipeCommands(
                 Arrays.copyOfRange(cmd, 0, index),
                 Arrays.copyOfRange(cmd, index + 1, cmd.length));
@@ -86,6 +86,8 @@ public class CustomShell {
     }
 
     private void handleExternalPipeCommands(String[] cmd1, String[] cmd2) {
+        printList(cmd1);
+        printList(cmd2);
         ProcessBuilder pb1 = new ProcessBuilder(cmd1);
         ProcessBuilder pb2 = new ProcessBuilder(cmd2);
         pb1.redirectInput(ProcessBuilder.Redirect.INHERIT);
@@ -104,7 +106,9 @@ public class CustomShell {
             out.close();
             p1.waitFor();
             p2.waitFor();
-        } catch (Exception ex) { }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 
