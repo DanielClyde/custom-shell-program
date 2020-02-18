@@ -92,11 +92,11 @@ public class CustomShell {
      * @param cmd2
      */
     private void handleExternalPipeCommands(String[] cmd1, String[] cmd2) {
-        printList(cmd1);
-        printList(cmd2);
         ProcessBuilder pb1 = new ProcessBuilder(cmd1);
         ProcessBuilder pb2 = new ProcessBuilder(cmd2);
         pb1.redirectInput(ProcessBuilder.Redirect.INHERIT);
+        pb1.directory(new File(System.getProperty("user.dir")));
+        pb2.directory(new File(System.getProperty("user.dir")));
 //        pb1.redirectOutput(ProcessBuilder.Redirect.PIPE);
 //        pb2.redirectInput(ProcessBuilder.Redirect.PIPE);
         pb2.redirectOutput(ProcessBuilder.Redirect.INHERIT);

@@ -124,6 +124,11 @@ class RDirCommand extends BuiltInCommand {
         }
     }
 
+    /**
+     * recursively delete a file and it's contents
+     * @param file the file to delete
+     * @author Danny Clyde
+     */
     public void deleteFile (File file) {
         File[] children = file.listFiles();
         if (children != null) {
