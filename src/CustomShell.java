@@ -86,6 +86,11 @@ public class CustomShell {
         }
     }
 
+    /**
+     * This code is from Dean Mathias's PipeDemo.java
+     * @param cmd1
+     * @param cmd2
+     */
     private void handleExternalPipeCommands(String[] cmd1, String[] cmd2) {
         printList(cmd1);
         printList(cmd2);
@@ -93,6 +98,7 @@ public class CustomShell {
         ProcessBuilder pb2 = new ProcessBuilder(cmd2);
         pb1.redirectInput(ProcessBuilder.Redirect.INHERIT);
 //        pb1.redirectOutput(ProcessBuilder.Redirect.PIPE);
+//        pb2.redirectInput(ProcessBuilder.Redirect.PIPE);
         pb2.redirectOutput(ProcessBuilder.Redirect.INHERIT);
         try {
             Process p1 = pb1.start();
